@@ -7,6 +7,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\RegistrationController;
@@ -107,6 +108,14 @@ Route::middleware(['auth', 'verified', 'ensure.user.belongs.to.company'])->group
     // Users (Admin only)
     Route::resource('users', UserController::class)->middleware('permission:view users');
     Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    
+    // Reports
+    Route::prefix('reports')->name('reports.')->middleware('permission:view reports')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/stock', [ReportController::class, 'stock'])->name('stock');
+        Route::get('/movements', [ReportController::class, 'movements'])->name('movements');
+        Route::get('/export', [ReportController::class, 'export'])->name('export');
+    });
     
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
